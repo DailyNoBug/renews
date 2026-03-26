@@ -114,6 +114,7 @@ install_runtime_deps() {
     docker_platform="$(docker_platform_for_target "$target")"
     docker run --rm \
       --platform "$docker_platform" \
+      -u "$(id -u):$(id -g)" \
       -v "$stage_dir:/work" \
       -w /work \
       node:22-bookworm \
