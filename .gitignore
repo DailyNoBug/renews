@@ -1,9 +1,11 @@
-node_modules
-dist
+node_modules/
+dist/
+artifacts/
+.packaging/
 .DS_Store
 .renews/checkpoints/blobs
 .renews/checkpoints/manifests
 .renews/index
 .renews/storage
-coverage
+coverage/
 *.log
