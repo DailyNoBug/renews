@@ -1,0 +1,119 @@
+name: Release CLI Packages
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Release tag, e.g. v0.1.1"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    name: Build Linux Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build linux package
+        run: |
+          chmod +x ./package-cli.sh
+          ./package-cli.sh linux-x64
+
+      - name: Upload linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-package
+          path: artifacts/renews-agent-cli-linux-x64.tar.gz
+          if-no-files-found: error
+
+  build-macos:
+    name: Build macOS Package
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build macOS package
+        run: |
+          chmod +x ./package-cli.sh
+          ./package-cli.sh darwin-arm64
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-package
+          path: artifacts/renews-agent-cli-darwin-arm64.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release Assets
+    runs-on: ubuntu-latest
+    needs:
+      - build-linux
+      - build-macos
+    steps:
+      - name: Resolve release tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ github.event.inputs.release_tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-package
+          path: release-assets
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-package
+          path: release-assets
+
+      - name: Create or update release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.value }}
+          files: |
+            release-assets/renews-agent-cli-linux-x64.tar.gz
+            release-assets/renews-agent-cli-darwin-arm64.tar.gz
+          generate_release_notes: true
