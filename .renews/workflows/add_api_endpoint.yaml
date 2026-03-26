@@ -1,0 +1,11 @@
+name: add_api_endpoint
+match:
+  any:
+    - "新增接口"
+    - "add api"
+steps:
+  - plan_endpoint_contract
+  - inspect_router
+  - add_handler
+  - add_tests
+  - run_validation

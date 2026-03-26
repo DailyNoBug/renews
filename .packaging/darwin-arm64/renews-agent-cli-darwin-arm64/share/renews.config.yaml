@@ -1,0 +1,109 @@
+project:
+  name: renews_agent
+  workspaceRoot: .
+  defaultMode: plan
+
+models:
+  planner:
+    provider: openai_compatible
+    baseURL: ${MODEL_GATEWAY_URL}
+    apiKeyEnv: MODEL_GATEWAY_KEY
+    model: planner-large
+    maxOutputTokens: 8192
+    temperature: 0.2
+  executor:
+    provider: openai_compatible
+    baseURL: ${MODEL_GATEWAY_URL}
+    apiKeyEnv: MODEL_GATEWAY_KEY
+    model: coder-main
+    maxOutputTokens: 8192
+    temperature: 0.1
+  editor:
+    provider: openai_compatible
+    baseURL: ${MODEL_GATEWAY_URL}
+    apiKeyEnv: MODEL_GATEWAY_KEY
+    model: coder-fast
+    maxOutputTokens: 8192
+    temperature: 0
+  reviewer:
+    provider: openai_compatible
+    baseURL: ${MODEL_GATEWAY_URL}
+    apiKeyEnv: MODEL_GATEWAY_KEY
+    model: reviewer-main
+    maxOutputTokens: 4096
+    temperature: 0.1
+  tester:
+    provider: openai_compatible
+    baseURL: ${MODEL_GATEWAY_URL}
+    apiKeyEnv: MODEL_GATEWAY_KEY
+    model: tester-main
+    maxOutputTokens: 4096
+    temperature: 0.1
+  summarizer:
+    provider: openai_compatible
+    baseURL: ${MODEL_GATEWAY_URL}
+    apiKeyEnv: MODEL_GATEWAY_KEY
+    model: summarizer-fast
+    maxOutputTokens: 2048
+    temperature: 0.1
+  fast:
+    provider: openai_compatible
+    baseURL: ${MODEL_GATEWAY_URL}
+    apiKeyEnv: MODEL_GATEWAY_KEY
+    model: fast-lite
+    maxOutputTokens: 2048
+    temperature: 0.1
+
+sandbox:
+  provider: docker
+  image: renews-agent:base
+  network: restricted
+  writablePaths:
+    - .
+  blockedCommands:
+    - rm -rf /
+    - shutdown
+    - reboot
+    - mkfs
+    - dd if=
+
+approvals:
+  default: ask
+  allowReadOnlyToolsWithoutApproval: true
+  requireApprovalFor:
+    - write_file
+    - delete_file
+    - run_command
+    - install_dependency
+    - git_commit
+    - network_request
+    - use_remote_search
+
+context:
+  repoMap:
+    enabled: true
+    maxSymbols: 1200
+  retrieval:
+    strategy: hybrid
+    useEmbeddings: false
+    topK: 20
+  treeSitter:
+    enabled: true
+
+search:
+  provider: remote
+  apiBaseURL: ${SEARCH_API_URL}
+  apiKeyEnv: SEARCH_API_KEY
+  maxResults: 8
+
+rules:
+  paths:
+    - .renews/rules
+
+skills:
+  paths:
+    - .renews/skills
+
+workflows:
+  paths:
+    - .renews/workflows

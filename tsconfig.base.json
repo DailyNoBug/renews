@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@renews/shared/*": ["packages/shared/src/*"],
+      "@renews/core/*": ["packages/core/src/*"],
+      "@renews/storage/*": ["packages/storage/src/*"],
+      "@renews/config/*": ["packages/config/src/*"],
+      "@renews/model/*": ["packages/model/src/*"],
+      "@renews/sandbox/*": ["packages/sandbox/src/*"],
+      "@renews/workspace/*": ["packages/workspace/src/*"],
+      "@renews/context/*": ["packages/context/src/*"],
+      "@renews/tools/*": ["packages/tools/src/*"],
+      "@renews/agents/*": ["packages/agents/src/*"],
+      "@renews/memory/*": ["packages/memory/src/*"],
+      "@renews/tracing/*": ["packages/tracing/src/*"],
+      "@renews/evals/*": ["packages/evals/src/*"]
+    }
+  }
+}

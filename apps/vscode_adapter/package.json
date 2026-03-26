@@ -1,0 +1,26 @@
+{
+  "name": "renews-agent-vscode",
+  "displayName": "Renews Agent",
+  "publisher": "renews",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "activationEvents": [
+    "onCommand:renews.startTask",
+    "onCommand:renews.showStatus"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "renews.startTask",
+        "title": "Renews: Start Task"
+      },
+      {
+        "command": "renews.showStatus",
+        "title": "Renews: Show Session Status"
+      }
+    ]
+  }
+}
