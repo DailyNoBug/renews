@@ -65,6 +65,40 @@ pnpm cli plan "为 packages/context 增加一个增量解析测试"
 - 产物输出到 `artifacts/`
 - 分发包需要目标机器已安装 Node.js 22+
 
+## Release 安装包使用
+
+当 GitHub Release 发布后，可直接下载对应系统的压缩包：
+
+- Linux: `renews-agent-cli-linux-x64.tar.gz`
+- macOS (Apple Silicon): `renews-agent-cli-darwin-arm64.tar.gz`
+
+使用步骤（以 Linux 为例，macOS 同理）：
+
+```bash
+# 1) 下载并解压（把 URL 替换成你的 release 地址）
+curl -L -o renews-agent-cli-linux-x64.tar.gz \
+  https://github.com/DailyNoBug/renews/releases/download/v0.0.1/renews-agent-cli-linux-x64.tar.gz
+tar -xzf renews-agent-cli-linux-x64.tar.gz
+
+# 2) 进入目录后直接执行
+cd renews-agent-cli-linux-x64
+./bin/renews --help
+./bin/renews plan "为 packages/context 增加一个增量解析测试"
+```
+
+如果你希望全局使用 `renews` 命令，可把 `bin` 目录加入 `PATH`：
+
+```bash
+export PATH="$(pwd)/bin:$PATH"
+renews --help
+```
+
+说明：
+
+- 安装包是 CLI 运行时，目标机器仍需 Node.js 22+
+- 建议在你的项目根目录执行 `renews`，以便读取当前目录的 `renews.config.yaml`
+- 模型/搜索所需密钥依然通过环境变量注入
+
 ## 配置
 
 默认配置文件为 `renews.config.yaml`。
