@@ -115,6 +115,8 @@ install_runtime_deps() {
     docker run --rm \
       --platform "$docker_platform" \
       -u "$(id -u):$(id -g)" \
+      -e HOME=/tmp \
+      -e npm_config_cache=/tmp/.npm \
       -v "$stage_dir:/work" \
       -w /work \
       node:22-bookworm \
